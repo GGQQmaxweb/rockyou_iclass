@@ -1,11 +1,13 @@
 # auth_module.py
 import os
 import requests
+import urllib3
 import re
 import logging
+from getpass import getpass
 from dotenv import load_dotenv
 
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings()
 
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(
@@ -21,8 +23,8 @@ class Authenticator:
         self.username = os.getenv("USERNAMEID")
         self.password = os.getenv("PASSWORD")
         if not self.username or not self.password:
-            logger.error("USERNAMEID or PASSWORD environment variables are not set.")
-            raise ValueError("請在 .env 檔案中設定 USERNAMEID 與 PASSWORD 環境變數。")
+            logger.warning("USERNAMEID or PASSWORD not set. Prompting for credentials.")
+            self.username, self.password = self._prompt_credentials()
         self.session = requests.Session()
         self.session.verify = False
         self.session.headers.update({"Referer": "https://iclass.tku.edu.tw/"})
@@ -31,6 +33,15 @@ class Authenticator:
             "?client_id=pdsiclass&response_type=code&redirect_uri=https%3A//iclass.tku.edu.tw/login"
             "&state=L2lwb3J0YWw=&scope=openid,public_profile,email"
         )
+
+    def _prompt_credentials(self):
+        username = ""
+        while not username:
+            username = input("Enter School ID: ").strip()
+        password = ""
+        while not password:
+            password = getpass("Enter PASSWORD: ")
+        return username, password
 
     def check_login_success(self, response):
         content = response.text
