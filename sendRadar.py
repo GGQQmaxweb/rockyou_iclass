@@ -1,7 +1,7 @@
 import json
 import logging
 
-from tku.http_headers import radar_headers
+from schools.http_headers import radar_headers
 
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(
@@ -17,6 +17,9 @@ def answer_rollcall_Radar(session, rollcall_id, endpoint="https://iclass.tku.edu
     )
 
     headers = radar_headers()
+    headers.update({
+        "host": endpoint.replace("https://", "").replace("http://", ""),
+    })
 
     payload = {
         "deviceId": "7eba2081f77e5525",  # 7eba2081f77e5527

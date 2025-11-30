@@ -1,7 +1,7 @@
 # For User
 
 ## Windows
-just go to [here](https://github.com/cantpr09ram/tenko/releases/download/Windows/tenko.exe) to downdown tenko.exe. duble clike to run it.
+go to [Releases](https://github.com/cantpr09ram/tenko/releases) to downdown `tenko-win.zip`. unzip and run it.
 
 ## Mac
 Coming Soon

@@ -7,7 +7,8 @@ hide:
 
 >The problem is not the students. The problem is how we teach them.
 
-tenko is a tool help you get better score at school.
+tenko is a tool help student get better score at school.
+
 for student in 
 
 - [Tankang University](https://www.tku.edu.tw/)

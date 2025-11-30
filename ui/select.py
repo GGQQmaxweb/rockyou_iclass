@@ -1,7 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Select
 
-school = ["tku", "fju"]
+school = ["tku", "fju", "au"]
 
 
 async def select_school() -> str:

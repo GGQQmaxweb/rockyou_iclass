@@ -2,63 +2,63 @@
 import os
 import requests
 import urllib3
-import requests
-from fju.http_headers import session_headers
 import re
 from urllib.parse import urlparse, parse_qs
 import logging
-from getpass import getpass
 from dotenv import load_dotenv
+from ui.login import login
+from schools.http_headers import session_headers
 
 urllib3.disable_warnings()
-
-if not logging.getLogger().hasHandlers():
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    )
 
 logger = logging.getLogger(__name__)
 
 
 class Authenticator:
-    def __init__(self):
-        load_dotenv()
-        self.username = os.getenv("USERNAMEID")
-        self.password = os.getenv("PASSWORD")
-        if not self.username or not self.password:
-            logger.warning("USERNAMEID or PASSWORD not set. Prompting for credentials.")
-            self.username, self.password = self._prompt_credentials()
+    def __init__(self, username: str, password: str) -> None:
+        self.username = username
+        self.password = password
         self.session = requests.Session()
         self.session.verify = False
         self.session.headers.update({"Referer": "https://elearn2.fju.edu.tw/"})
-       
-    def _prompt_credentials(self):
-        username = input("Enter your username: ")
-        password = getpass("Enter your password: ")
-        return username, password
-    
+
+    @classmethod
+    async def create(cls) -> "Authenticator":
+        """
+        建立 Authenticator
+        1. 優先讀 .env 中 USERNAMEID / PASSWORD
+        2. 若沒設，就用 Textual TUI 互動式輸入
+        """
+        load_dotenv()
+        username = os.getenv("USERNAMEID")
+        password = os.getenv("PASSWORD")
+
+        if not username or not password:
+            logger.warning("USERNAMEID or PASSWORD not set. Prompting for credentials.")
+            username, password = await login()
+
+        return cls(username, password)
+
     def login(self):
         # Set up headers using the centralized headers
         headers = session_headers()
-        headers.update({
-            "host": "elearn2.fju.edu.tw",
-            "content-type": "application/x-www-form-urlencoded",
-            "referer": "https://elearn2.fju.edu.tw/cas/login",
-            "user-agent": "TronClass/2.13.2(iPad; iOS 16.4.1; Scale/2.00)",
-        })
+        headers.update(
+            {
+                "host": "elearn2.fju.edu.tw",
+                "content-type": "application/x-www-form-urlencoded",
+                "referer": "https://elearn2.fju.edu.tw/cas/login",
+                "user-agent": "TronClass/2.13.2(iPad; iOS 16.4.1; Scale/2.00)",
+            }
+        )
 
         # Set username and password in form data
-        form_data = {
-            "username": self.username,
-            "password": self.password
-        }
+        form_data = {"username": self.username, "password": self.password}
 
         # Create a session to manage cookies
         session = requests.Session()
 
         # Get the login page to initialize session cookies
         session.get("https://elearn2.fju.edu.tw/d/server-time")
-
 
         # Send POST request with form data and headers
         url = "https://elearn2.fju.edu.tw/cas/v1/tickets"
@@ -72,7 +72,7 @@ class Authenticator:
 
         # ========= 關鍵：強制改成 HTTPS =========
         if tgt_url_raw.startswith("http://"):
-            tgt_url = "https://" + tgt_url_raw[len("http://"):]
+            tgt_url = "https://" + tgt_url_raw[len("http://") :]
         else:
             tgt_url = tgt_url_raw
 
@@ -103,8 +103,9 @@ class Authenticator:
                 st = ticket_list[0]
 
         if not st:
-            raise RuntimeError("Failed to extract Service Ticket (ST) from CAS response")
-
+            raise RuntimeError(
+                "Failed to extract Service Ticket (ST) from CAS response"
+            )
 
         # ========= 第三步：拿 ST 打目標 service（如果你要手動驗證） =========
         final_resp = session.get(
@@ -112,7 +113,6 @@ class Authenticator:
             params={"ticket": st},
             allow_redirects=False,  # 這裡要不要跟 redirect 看你需求
         )
-        
+
         self.session = session
         return self.session
-        

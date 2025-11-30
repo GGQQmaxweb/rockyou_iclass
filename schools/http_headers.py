@@ -1,6 +1,4 @@
-"""Centralized HTTP header helpers for iClass requests."""
-
-from __future__ import annotations
+"""Centralized HTTP header helpers for TronClass requests."""
 
 _COMMON_HEADERS = {
     "sec-ch-ua-platform": '"Android"',
@@ -31,7 +29,6 @@ def number_rollcall_headers() -> dict[str, str]:
     headers = session_headers()
     headers.update(
         {
-            "host": "elearn2.fju.edu.tw",
             "content-type": "application/json",
             "referer": "http://localhost/",
             "accept-encoding": "gzip, deflate, br, zstd",

@@ -6,25 +6,19 @@ import re
 import logging
 from getpass import getpass
 from dotenv import load_dotenv
+import asyncio
+from ui.login import login
 
 urllib3.disable_warnings()
-
-if not logging.getLogger().hasHandlers():
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    )
 
 logger = logging.getLogger(__name__)
 
 
 class Authenticator:
-    def __init__(self):
-        load_dotenv()
-        self.username = os.getenv("USERNAMEID")
-        self.password = os.getenv("PASSWORD")
-        if not self.username or not self.password:
-            logger.warning("USERNAMEID or PASSWORD not set. Prompting for credentials.")
-            self.username, self.password = self._prompt_credentials()
+    def __init__(self, username: str, password: str) -> None:
+        self.username = username
+        self.password = password
+
         self.session = requests.Session()
         self.session.verify = False
         self.session.headers.update({"Referer": "https://iclass.tku.edu.tw/"})
@@ -34,14 +28,24 @@ class Authenticator:
             "&state=L2lwb3J0YWw=&scope=openid,public_profile,email"
         )
 
-    def _prompt_credentials(self):
-        username = ""
-        while not username:
-            username = input("Enter School ID: ").strip()
-        password = ""
-        while not password:
-            password = getpass("Enter PASSWORD: ")
-        return username, password
+    @classmethod
+    async def create(cls) -> "Authenticator":
+        """
+        建立 Authenticator
+        1. 優先讀 .env 中 USERNAMEID / PASSWORD
+        2. 若沒設，就用 Textual TUI 互動式輸入
+        """
+        load_dotenv()
+        username = os.getenv("USERNAMEID")
+        password = os.getenv("PASSWORD")
+
+        if not username or not password:
+            logger.warning("USERNAMEID or PASSWORD not set. Prompting for credentials.")
+            username, password = await login()
+            logger.info("Credentials entered via TUI login")
+
+        logger.info("Creating TKU authenticator for user: %s", username)
+        return cls(username, password)
 
     def check_login_success(self, response):
         content = response.text
@@ -55,8 +59,11 @@ class Authenticator:
             return True
 
     def perform_auth(self):
+        logger.info("Starting TKU authentication process")
         self.session.get("https://iclass.tku.edu.tw/login?next=/iportal&locale=zh_TW")
+        logger.info("Accessed TKU login page")
         self.session.get(self.auth_url)
+        logger.info("Accessed TKU SSO auth URL")
         login_page_url = (
             f"https://sso.tku.edu.tw/NEAI/logineb.jsp?myurl={self.auth_url}"
         )

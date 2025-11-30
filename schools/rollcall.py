@@ -7,22 +7,31 @@ from sendNum import answer_rollcall_number_async
 logger = logging.getLogger(__name__)
 
 
-async def handle_rollcall(auth_session, endpoint: str, latitude: float, longitude: float) -> None:
-    rollcall_id, source = wait_for_rollcall(session=auth_session, endpoint=endpoint)
-    logger.info("Returned: rollcall_id=%s, source=%s", rollcall_id, source)
+async def handle_rollcall(
+    auth_session, endpoint: str, latitude: float, longitude: float
+) -> None:
+    try:
+        logger.info("Starting rollcall handling for endpoint: %s", endpoint)
+        rollcall_id, source = await wait_for_rollcall(
+            session=auth_session, endpoint=endpoint
+        )
+        logger.info("Returned: rollcall_id=%s, source=%s", rollcall_id, source)
+    except Exception as e:
+        logger.error("Error in rollcall handling: %s", str(e))
+        return
 
     if source == "number":
         data = await answer_rollcall_number_async(
-            session = auth_session,
-            rollcall_id = rollcall_id,
+            session=auth_session,
+            rollcall_id=rollcall_id,
             endpoint=endpoint,
         )
         logger.info("Number rollcall response: %s", data)
 
     elif source == "radar":
         radar_response = await answer_rollcall_Radar(
-            session = auth_session,
-            rollcall_id = rollcall_id,
+            session=auth_session,
+            rollcall_id=rollcall_id,
             endpoint=endpoint,
             latitude=latitude,
             longitude=longitude,
