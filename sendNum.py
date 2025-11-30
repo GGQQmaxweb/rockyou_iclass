@@ -4,7 +4,7 @@ import asyncio
 import json
 import logging
 
-from tku.http_headers import number_rollcall_headers
+from schools.http_headers import number_rollcall_headers
 
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(
@@ -33,6 +33,10 @@ async def answer_rollcall_number_async(
 ):
     url = f"{endpoint}/api/rollcall/{rollcall_id}/answer_number_rollcall"
     headers = number_rollcall_headers()
+    headers.update({
+        "host": endpoint.replace("https://", "").replace("http://", ""),
+    })
+    
     concurrency = max(1, min(concurrency, MAX_NUMBER_CODE))
 
     # Disable SSL verification
