@@ -1,0 +1,45 @@
+name: Build AppImage
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install appimage-builder
+      run: |
+        pip install --upgrade pip
+        pip install appimage-builder
+
+    - name: Build AppImage
+      run: |
+        # Ensure AppDir exists
+        mkdir -p appimage/AppDir/usr/src
+
+        # Copy project source into AppDir
+        cp -r tenko appimage/AppDir/usr/src/
+
+        # Install dependencies into AppDir
+        pip install --prefix=appimage/AppDir/usr --ignore-installed -r requirements.txt || true
+
+        # Build with recipe
+        appimage-builder --recipe AppImageBuilder.yml --skip-tests
+
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v4
+      with:
+        name: tenko-appimage
+        path: "*.AppImage"
