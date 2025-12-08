@@ -29,7 +29,9 @@ jobs:
     - name: Prepare AppDir
       run: |
         mkdir -p appimage/AppDir/usr/src
-        cp -r . appimage/AppDir/usr/src/
+    
+        shopt -s extglob dotglob
+        cp -r !(appimage) appimage/AppDir/usr/src/
 
     - name: Install dependencies
       run: |
