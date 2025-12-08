@@ -28,7 +28,8 @@ jobs:
           libgdk-pixbuf2.0-dev \
           fakeroot \
           strace \
-          fuse
+          fuse \
+          libfuse2 \
 
     - name: Set up Python
       uses: actions/setup-python@v5
