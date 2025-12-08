@@ -5,6 +5,11 @@ on:
   release:
     types: [published]
 
+files:
+  include:
+    - /usr/bin/python3
+    - usr/**
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -100,7 +105,7 @@ jobs:
         HERE="\$(dirname "\$(readlink -f "\$0")")"
         export PYTHONHOME="\$HERE/.."
         export PYTHONPATH="\$HERE/../src"
-        exec python3 -m ${REPO_NAME} "\$@"
+        exec "$HERE/python3" -m ${REPO_NAME} "$@"
         EOF
         chmod +x appimage/AppDir/usr/bin/${REPO_NAME}
 
