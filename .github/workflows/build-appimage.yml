@@ -61,6 +61,7 @@ jobs:
             exec: usr/bin/${REPO_NAME}
 
           runtime:
+            use_system_python: true
             env:
               PYTHONHOME: "$APPDIR/usr"
               PYTHONPATH: "$APPDIR/usr/src"
