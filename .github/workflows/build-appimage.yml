@@ -66,11 +66,10 @@ jobs:
               - python3-pip
               - python3-venv
 
-        script:
-          build:
-            - pip install --upgrade pip
-            - pip install --prefix=$APPDIR/usr --ignore-installed -r requirements.txt || true
-            - cp -r appimage/AppDir/usr/src/${REPO_NAME} $APPDIR/usr/src/
+        script: |
+          pip install --upgrade pip
+          pip install --prefix=$APPDIR/usr --ignore-installed -r requirements.txt || true
+          cp -r appimage/AppDir/usr/src/${REPO_NAME} $APPDIR/usr/src/
 
         AppImage:
           arch: x86_64
