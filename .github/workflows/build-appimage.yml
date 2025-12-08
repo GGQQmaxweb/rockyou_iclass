@@ -29,7 +29,7 @@ jobs:
     - name: Prepare AppDir
       run: |
         mkdir -p appimage/AppDir/usr/src
-        cp -r "$REPO_NAME" appimage/AppDir/usr/src/
+        cp -r . appimage/AppDir/usr/src/
 
     - name: Install dependencies
       run: |
