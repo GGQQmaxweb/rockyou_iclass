@@ -67,8 +67,8 @@ jobs:
               - python3-venv
 
         script: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install --prefix=$APPDIR/usr --ignore-installed -r requirements.txt
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user --prefix=$APPDIR/usr --ignore-installed -r requirements.txt
 
 
         AppImage:
