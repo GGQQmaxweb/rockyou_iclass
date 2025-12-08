@@ -61,7 +61,6 @@ jobs:
             exec: usr/bin/${REPO_NAME}
 
           runtime:
-            use_system_python: true
             env:
               PYTHONHOME: "$APPDIR/usr"
               PYTHONPATH: "$APPDIR/usr/src"
@@ -99,12 +98,17 @@ jobs:
         mkdir -p appimage/AppDir/usr/bin
         cat > appimage/AppDir/usr/bin/${REPO_NAME} << EOF
         #!/bin/bash
-        HERE="\$(dirname "\$(readlink -f "\$0")")"
-        export PYTHONHOME="\$HERE/.."
-        export PYTHONPATH="\$HERE/../src"
-        exec python3 -m ${REPO_NAME} "\$@"
+        HERE="$(dirname "$(readlink -f "$0")")"
+        export PYTHONHOME="$HERE"
+        export PYTHONPATH="$HERE/../src"
+        exec "$HERE/python3" -m ${REPO_NAME} "$@"
         EOF
         chmod +x appimage/AppDir/usr/bin/${REPO_NAME}
+
+    - name: Copy system Python into AppDir
+      run: |
+        mkdir -p appimage/AppDir/usr/bin
+        cp /usr/bin/python3 appimage/AppDir/usr/bin/
 
     # --------------------------------------------
     # Build AppImage
