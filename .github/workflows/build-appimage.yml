@@ -61,6 +61,8 @@ jobs:
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user --ignore-installed -r requirements.txt
 
+        AppImage:
+          arch: x86_64
         EOF
 
     # --------------------------------------------
