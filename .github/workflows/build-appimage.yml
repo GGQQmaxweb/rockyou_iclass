@@ -5,11 +5,6 @@ on:
   release:
     types: [published]
 
-files:
-  include:
-    - /usr/bin/python3
-    - usr/**
-
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -73,6 +68,7 @@ jobs:
 
           files:
             include:
+              - /usr/bin/python3
               - usr/**
             exclude:
               - "**/__pycache__"
