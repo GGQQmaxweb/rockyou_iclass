@@ -101,7 +101,7 @@ jobs:
         HERE="\$(dirname "\$(readlink -f "\$0")")"
         export PYTHONHOME="\$HERE/.."
         export PYTHONPATH="\$HERE/../src"
-        exec "$HERE/python3" -m ${REPO_NAME} "$@"
+        exec python3 -m ${REPO_NAME} "\$@"
         EOF
         chmod +x appimage/AppDir/usr/bin/${REPO_NAME}
 
