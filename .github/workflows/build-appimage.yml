@@ -57,15 +57,6 @@ jobs:
             exclude:
               - "**/__pycache__"
 
-          apt:
-            arch: amd64
-            sources:
-              - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal main universe
-            include:
-              - python3
-              - python3-pip
-              - python3-venv
-
         script: |
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user --ignore-installed -r requirements.txt
