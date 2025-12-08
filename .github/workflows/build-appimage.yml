@@ -79,7 +79,6 @@ jobs:
     - name: Prepare AppDir source
       run: |
         mkdir -p appimage/AppDir/usr/src
-
         shopt -s extglob dotglob
         cp -r !(appimage) appimage/AppDir/usr/src/
 
