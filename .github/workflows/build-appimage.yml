@@ -74,19 +74,19 @@ jobs:
               - "**/__pycache__"
 
         script: |
-          export PYTHONNOUSERSITE=1
-          export PYTHONPATH=""
-          export PYTHONHOME=""
+            export PYTHONNOUSERSITE=1
+            export PYTHONPATH=""
+            export PYTHONHOME=""
 
-          # Make sure target exists
-          mkdir -p "$APPDIR/usr"
+            # Ensure APPDIR exists
+            mkdir -p "$APPDIR"
 
-          # Use pip in isolated mode so it can NEVER touch /usr
-          python3 -m pip install \
-              --no-cache-dir \
-              --ignore-installed \
-              --prefix="$APPDIR/usr" \
-              -r requirements.txt
+            # Install Python deps into AppDir (never touches system /usr)
+            python3 -m pip install \
+                --no-cache-dir \
+                --ignore-installed \
+                --root="$APPDIR" \
+                -r requirements.txt
 
         AppImage:
           arch: x86_64
