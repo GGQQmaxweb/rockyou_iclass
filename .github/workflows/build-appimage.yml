@@ -74,8 +74,8 @@ jobs:
               - "**/__pycache__"
 
         script: |
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install --user --ignore-installed -r requirements.txt
+          python3 -m pip install --target $APPDIR/usr  --upgrade pip
+          python3 -m pip install --target $APPDIR/usr  --ignore-installed -r requirements.txt
 
         AppImage:
           arch: x86_64
@@ -93,6 +93,7 @@ jobs:
     # --------------------------------------------
     # Create launcher: usr/bin/<repo_name>
     # --------------------------------------------
+
     - name: Create launcher script
       run: |
         mkdir -p appimage/AppDir/usr/bin
@@ -105,16 +106,12 @@ jobs:
         EOF
         chmod +x appimage/AppDir/usr/bin/${REPO_NAME}
 
-    - name: Copy system Python into AppDir
-      run: |
-        mkdir -p appimage/AppDir/usr/bin
-        cp /usr/bin/python3 appimage/AppDir/usr/bin/
-
     # --------------------------------------------
     # Build AppImage
     # --------------------------------------------
     - name: Build AppImage
       run: |
+        export ARCH=x86_64
         appimage-builder --recipe AppImageBuilder.yml --skip-tests
 
     # --------------------------------------------
