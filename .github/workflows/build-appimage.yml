@@ -77,6 +77,10 @@ jobs:
           export PYTHONNOUSERSITE=1
           export PYTHONPATH=""
           export PYTHONHOME=""
+          
+          #AppImage prefers manual copying
+          cp -r /usr/bin/python3 "$APPDIR/usr/bin/"
+          cp -r /usr/lib/python3.11 "$APPDIR/usr/"
 
           # Install pip locally instead of upgrading system pip
           python3 -m pip install --no-cache-dir --no-warn-script-location --target "$APPDIR/usr" pip==24.3.1
