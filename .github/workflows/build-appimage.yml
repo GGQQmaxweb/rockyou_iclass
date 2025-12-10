@@ -74,8 +74,15 @@ jobs:
               - "**/__pycache__"
 
         script: |
-          python3 -m pip install --target $APPDIR/usr  --upgrade pip
-          python3 -m pip install --target $APPDIR/usr  --ignore-installed -r requirements.txt
+          export PYTHONNOUSERSITE=1
+          export PYTHONPATH=""
+          export PYTHONHOME=""
+
+          # Install pip locally instead of upgrading system pip
+          python3 -m pip install --no-cache-dir --no-warn-script-location --target "$APPDIR/usr" pip==24.3.1
+
+          # Install your dependencies into AppDir only
+          python3 -m pip install --no-cache-dir --no-warn-script-location --target "$APPDIR/usr" -r requirements.txt
 
         AppImage:
           arch: x86_64
