@@ -79,7 +79,7 @@ jobs:
             export PYTHONHOME=""
 
             # Ensure APPDIR exists
-            mkdir -p "$APPDIR"
+            #mkdir -p "$APPDIR"
 
             # Install Python deps into AppDir (never touches system /usr)
             python3 -m pip install \
