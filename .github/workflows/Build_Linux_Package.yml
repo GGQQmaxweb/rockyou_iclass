@@ -31,11 +31,8 @@ jobs:
           echo "[+] Installing uv..."
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
-          
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install uv
           # install deps with uv
+          uv venv .venv
           uv sync
           uv pip install pyinstaller
           pyinstaller main.py --onefile --name ${REPO_NAME}
