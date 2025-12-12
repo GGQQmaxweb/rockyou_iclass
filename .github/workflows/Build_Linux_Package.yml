@@ -41,7 +41,7 @@ jobs:
 
       - name: Build .deb package
         run: |
-          fpm -s dir -t deb -n myapp -v 1.0 \
+          fpm -s dir -t deb -n ${REPO_NAME} -v 1.0 \
               -C package \
               --prefix / \
               --description "${REPO_NAME} packaged as DEB" \
@@ -49,7 +49,7 @@ jobs:
 
       - name: Build .rpm package
         run: |
-          fpm -s dir -t rpm -n myapp -v 1.0 \
+          fpm -s dir -t rpm -n ${REPO_NAME} -v 1.0 \
               -C package \
               --prefix / \
               --description "${REPO_NAME} packaged as RPM" \
