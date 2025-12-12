@@ -55,15 +55,15 @@ jobs:
               --description "${REPO_NAME} packaged as RPM" \
               usr/bin/${REPO_NAME}
 
-      - name: Upload artifacts deb
+      - name: Upload DEB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${REPO_NAME}_${VERSION}_amd64.deb
+          name: ${{ env.REPO_NAME }}_${{ env.VERSION }}_amd64.deb
           path: ./*.deb
 
-      - name: Upload artifacts rpm
+      - name: Upload RPM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${REPO_NAME}-${VERSION}-1.x86_64.rpm
-          path: |
-            ./*.rpm
+          name: ${{ env.REPO_NAME }}-${{ env.VERSION }}-1.x86_64.rpm
+          path: ./*.rpm
+
