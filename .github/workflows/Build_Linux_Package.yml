@@ -8,9 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-  env:
-      REPO_NAME: ${{ github.event.repository.name }}
-      VERSION: ${{ github.event.release.tag_name || 'dev' }}
+    env:
+        REPO_NAME: ${{ github.event.repository.name }}
+        VERSION: ${{ github.event.release.tag_name || 'dev' }}
+
   steps:
       - uses: actions/checkout@v3
       
