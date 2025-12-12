@@ -31,10 +31,16 @@ jobs:
           echo "[+] Installing uv..."
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
-          # install deps with uv
+
+          echo "[+] Creating virtualenv with uv"
           uv venv .venv
-          uv sync
+          source .venv/bin/activate
+
+          echo "[+] Installing dependencies"
+          uv sync    # reads pyproject.toml or requirements.txt automatically
           uv pip install pyinstaller
+
+          echo "[+] Building binary"
           pyinstaller main.py --onefile --name ${REPO_NAME}
 
       - name: Prepare package directory
