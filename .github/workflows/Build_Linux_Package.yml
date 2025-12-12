@@ -42,22 +42,6 @@ jobs:
           mkdir -p package/usr/bin
           cp dist/${REPO_NAME} package/usr/bin/
 
-      - name: Build .deb package
-        run: |
-          fpm -s dir -t deb -n ${REPO_NAME} -v 1.0 \
-              -C package \
-              --prefix / \
-              --description "${REPO_NAME} packaged as DEB" \
-              usr/bin/${REPO_NAME}
-
-      - name: Build .rpm package
-        run: |
-          fpm -s dir -t rpm -n ${REPO_NAME} -v 1.0 \
-              -C package \
-              --prefix / \
-              --description "${REPO_NAME} packaged as RPM" \
-              usr/bin/${REPO_NAME}
-
       - name: Upload DEB artifact
         uses: actions/upload-artifact@v4
         with:
