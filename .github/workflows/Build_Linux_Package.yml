@@ -32,7 +32,7 @@ jobs:
           source .venv/bin/activate
           pip install -r requirements.txt
           pip install pyinstaller
-          pyinstaller main.py --onefile --name ${REPO_NAME} --add-data '.env:.'
+          pyinstaller main.py --onefile --name ${REPO_NAME}
 
       - name: Prepare package directory
         run: |
