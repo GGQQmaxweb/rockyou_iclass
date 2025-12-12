@@ -28,10 +28,23 @@ jobs:
 
       - name: Build PyInstaller binary
         run: |
+<<<<<<< Updated upstream
           python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
           pip install pyinstaller
+=======
+          echo "[+] Installing uv..."
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install uv
+          # install deps with uv
+          uv sync
+          uv pip install pyinstaller
+>>>>>>> Stashed changes
           pyinstaller main.py --onefile --name ${REPO_NAME}
 
       - name: Prepare package directory
